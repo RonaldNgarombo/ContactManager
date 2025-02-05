@@ -1,34 +1,5 @@
 <?php
 // Start the session
-// session_start();
-
-// require_once './../../database/db.php';
-
-// $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
-// $user_id = $user['id'];
-
-// // Prepare the SELECT query
-// $sql = "SELECT * FROM contacts WHERE user_id = :user_id ORDER BY id DESC";
-// $stmt = $pdo->prepare($sql);
-
-// // Bind the user ID parameter
-// $stmt->bindParam(':user_id', $user_id);
-
-// // Execute the query
-// $stmt->execute();
-
-// // Fetch all results
-// $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// if ($contacts) {
-//     // If contacts are found, process them (e.g., display in a table or list)
-// } else {
-//     // No contacts found
-//     $errors[] = "No contacts found.";
-// }
-
-
-// Start the session
 session_start();
 require_once './../../database/db.php';
 
@@ -126,13 +97,57 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php unset($_SESSION['success_message']); ?>
                     <?php endif; ?>
 
+                    <?php if (isset($_SESSION['error_message'])): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> <?php echo htmlspecialchars($_SESSION['error_message']); ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['error_message']); ?>
+                    <?php endif; ?>
+
                     <div class="grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <p class="card-title mb-0">My Contacts</p>
 
-                                    <a href="./add_user_contact.php" type="submit" class="btn btn-primary me-2">+ Add Contact</a>
+                                    <div>
+                                        <div class="modal fade" id="importContactsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Import Contacts</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <p class="card-description">You can easily import your personal, family, or business contacts.</p>
+
+                                                        <form class="forms-sample" method="POST" action="import_contacts.php" enctype="multipart/form-data">
+                                                            <div class="row">
+
+                                                                <div class="form-group">
+                                                                    <label for="name">Select CSV file</label>
+
+                                                                    <input type="file" class="form-control" id="csv_file" name="csv_file" value="<?php echo isset($form_data['csv_file']) ? htmlspecialchars($form_data['csv_file']) : ''; ?>" accept=".csv">
+                                                                    <span class="text-danger validation-error"><?php echo isset($errors['csv_file']) ? $errors['csv_file'] : ''; ?></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <hr>
+
+                                                            <button type="submit" class="btn btn-primary me-2">Submit</button>
+                                                            <a href="./user_contacts.php" class="btn btn-light">Cancel</a>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button id="import-btn" type="button" class="btn btn-success me-2 text-white" data-bs-toggle="modal" data-bs-target="#importContactsModal">+ Import Contacts</button>
+                                        <button id="export-btn" type="button" class="btn btn-secondary me-2 text-white" style="background-color: #000000;">+ Export Contacts</button>
+                                        <a href="./add_user_contact.php" type="submit" class="btn btn-primary me-2">+ Add Contact</a>
+                                    </div>
                                 </div>
 
                                 <hr>
@@ -196,7 +211,7 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         </table>
                                     </div>
                                 <?php else: ?>
-                                    <p>No contacts found.</p>
+                                    <p class="text-center">No contacts found.</p>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -241,6 +256,24 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             phoneType.addEventListener("change", function() {
                 searchForm.submit();
             });
+
+            /**
+             * Export contacts to CSV
+             */
+            document.getElementById("export-btn").addEventListener("click", function() {
+                // return alert("Exporting contacts is not implemented yet.");
+                let searchQuery = document.getElementById("searchInput").value;
+                let phoneType = document.getElementById("phoneType").value;
+
+                // return console.log(searchQuery, phoneType);
+                let params = new URLSearchParams({
+                    search: searchQuery,
+                    phone_type: phoneType
+                });
+
+                window.location.href = "export_contacts.php?" + params.toString();
+            });
+
         });
     </script>
 
