@@ -24,17 +24,17 @@
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
                 <i class="icon-columns menu-icon"></i>
-                <span class="menu-title">Form elements</span>
+                <span class="menu-title">Profile</span>
                 <i class="menu-arrow"></i>
             </a>
 
             <div class="collapse" id="form-elements">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Profile Details</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./../../pages/user/change_password.php">Profile Details</a></li>
                 </ul>
 
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Change Password</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./../../pages/user/change_password.php">Change Password</a></li>
                 </ul>
             </div>
         </li>
