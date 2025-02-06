@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once './../../database/db.php';
+require_once './../../utilities/activity_logger.php';
 
 // Set the headers for CSV download
 header('Content-Type: text/csv; charset=utf-8');
@@ -50,5 +51,7 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 foreach ($contacts as $contact) {
     fputcsv($output, $contact);
 }
+
+log_action($pdo, "Export contacts", "Exported contacts successfully");
 
 fclose($output);

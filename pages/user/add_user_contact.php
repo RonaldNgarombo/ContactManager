@@ -7,6 +7,9 @@ $errors = [];
 $form_data = [];
 
 require_once './../../database/db.php';
+require_once './../../utilities/activity_logger.php';
+
+log_action($pdo, "View create/update contact", "User viewed the create/update contact page.");
 
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
@@ -61,8 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 if ($stmt->execute()) {
                     $_SESSION['success_message'] = "Contact updated successfully!";
+
+                    log_action($pdo, "Update contact", "Contact updated successfully!");
                 } else {
                     $errors[] = "An error occurred while updating the contact.";
+                    log_action($pdo, "Update contact", "An error occurred while updating the contact.", 2);
+
                     throw new Exception("Error updating contact.");
                 }
             } else {
@@ -79,8 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($stmt->execute()) {
 
                     $_SESSION['success_message'] = "Contact created successfully!";
+
+                    log_action($pdo, "Create contact", "New contact created successfully!");
                 } else {
                     $errors[] = "An error occurred while saving the contact.";
+
+                    log_action($pdo, "Create contact", "An error occurred while creating a new contact.", 2);
+
                     throw new Exception("Error creating contact.");
                 }
             }

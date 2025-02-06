@@ -7,6 +7,9 @@ $errors = [];
 $form_data = [];
 
 require_once './../../database/db.php';
+require_once './../../utilities/activity_logger.php';
+
+log_action($pdo, "View profile", "User viewed their profile page.");
 
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
@@ -62,10 +65,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($stmt->execute()) {
                 $_SESSION['success_message'] = "Profile information updated successfully!";
+
+                log_action($pdo, "Update profile", "Profile information updated successfully!");
+
                 header("Location: ./update_profile.php");
                 exit();
             } else {
                 $errors[] = "Failed to update profile information.";
+
+                log_action($pdo, "Update profile", "Failed to update profile information.", 2);
             }
         } catch (Exception $e) {
             $errors[] = "Database error: " . $e->getMessage();
@@ -74,58 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 
-// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//     // Get form data
-//     $form_data['first_name'] = trim($_POST['first_name']);
-//     $form_data['last_name'] = trim($_POST['last_name']);
-//     $form_data['email'] = trim($_POST['email']);
-
-//     // Validate inputs
-//     if (empty($form_data['first_name'])) {
-//         $errors['first_name'] = 'First name is required.';
-//     }
-//     if (empty($form_data['last_name'])) {
-//         $errors['last_name'] = 'Last name is required.';
-//     }
-//     if (empty($form_data['email'])) {
-//         $errors['email'] = 'Email is required.';
-//     }
-
-//     // If no errors, proceed with password update
-//     if (empty($errors)) {
-//         try {
-//             // Fetch user password from database
-//             // $stmt = $pdo->prepare("SELECT password FROM users WHERE id = :user_id");
-//             // $stmt->bindParam(':user_id', $user_id);
-//             // $stmt->execute();
-//             // $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-//             if (empty($errors)) {
-
-//                 // Update password in database
-//                 $stmt = $pdo->prepare("UPDATE users SET first_name = :first_name, last_name = :last_name, email = :email WHERE id = :user_id");
-
-//                 // $stmt = $pdo->prepare("UPDATE users SET first_name = :first_name last_name = :last_name email = :email WHERE id = :user_id");
-//                 $stmt->bindParam(':first_name', $first_name);
-//                 $stmt->bindParam(':last_name', $last_name);
-//                 $stmt->bindParam(':email', $email);
-//                 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-
-
-//                 if ($stmt->execute()) {
-//                     $_SESSION['success_message'] = "Profile information updated successfully!";
-//                     header("Location: ./update_profile.php");
-//                     exit();
-//                 } else {
-//                     $errors[] = "Failed to update profile information.";
-//                 }
-//             }
-//         } catch (Exception $e) {
-//             $errors[] = $e->getMessage();
-//         }
-//     }
-// }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -142,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="./../../assets/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="./../../assets/vendors/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="./../../assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="./../../assets/vendors/bootstrap-icons/bootstrap-icons.css">
 
     <!-- endinject -->
     <!-- Plugin css for this page -->
@@ -230,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <br>
 
                                             <label for="avatar" class="btn btn-sm btn-outline-primary mt-2">
-                                                <i class="fas fa-camera"></i> Select Avatar
+                                                <i class="bi bi-camera"></i> Select Avatar
                                             </label>
 
                                             <input type="file" id="avatar" name="avatar" class="d-none" accept="image/*">

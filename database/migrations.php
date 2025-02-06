@@ -31,6 +31,16 @@ try {
     )";
     $pdo->exec($sql);
 
+    $sql = "CREATE TABLE activity_logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        action VARCHAR(255) NOT NULL,
+        details TEXT NULL,
+        status INT DEFAULT 1,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+    $pdo->exec($sql);
+
     // Create the contacts table
     $sql = "CREATE TABLE IF NOT EXISTS contacts (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -44,17 +54,6 @@ try {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )";
     $pdo->exec($sql);
-
-    // // Create the user_contacts table
-    // $sql = "CREATE TABLE IF NOT EXISTS user_contacts (
-    //     id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    //     user_id INT(11) NOT NULL,
-    //     contact_id INT(11) NOT NULL,
-    //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    //     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    //     FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE
-    // )";
-    // $pdo->exec($sql);
 
     echo "\n\nMigrations run successfully. 🥳";
     return;
