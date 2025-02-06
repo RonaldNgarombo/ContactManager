@@ -21,6 +21,7 @@ try {
     // Create the users table
     $sql = "CREATE TABLE IF NOT EXISTS users (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        avatar VARCHAR(255) NULL,
         first_name VARCHAR(100) NOT NULL,
         last_name VARCHAR(100) NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,

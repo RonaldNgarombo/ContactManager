@@ -30,7 +30,7 @@
 
             <div class="collapse" id="form-elements">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"><a class="nav-link" href="./../../pages/user/change_password.php">Profile Details</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./../../pages/user/update_profile.php">Profile Details</a></li>
                 </ul>
 
                 <ul class="nav flex-column sub-menu">
