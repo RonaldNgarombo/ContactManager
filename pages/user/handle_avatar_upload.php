@@ -8,7 +8,7 @@ $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
 
 // Define the upload directory
-$uploadDir = './avatars/';
+$uploadDir = './../../avatars/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
@@ -35,32 +35,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['avatar'])) {
     } else {
         // Generate a unique filename
         $fileExt = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $newFileName = uniqid('avatar_', true) . '.' . $fileExt;
+        $newFileName = uniqid('', true) . '.' . $fileExt;
         $uploadPath = $uploadDir . $newFileName;
 
-        // die($uploadPath);
-
-        // move_uploaded_file($file['tmp_name'], $uploadPath)
-
-        // $something = move_uploaded_file($file["tmp_name"], $file["name"]);
-
-        // die($something);
-
         // Move the file to the avatars directory
-        // if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-        //     // Update user's profile in the database (example)
+        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            // Update user's profile in the database (example)
 
-        //     if ($user_id) {
-        //         $stmt = $pdo->prepare("UPDATE users SET avatar = ? WHERE id = ?");
-        //         if ($stmt->execute([$newFileName, $user_id])) {
-        //             $_SESSION['success_message'] = "Profile picture updated successfully!";
-        //         } else {
-        //             $_SESSION['error_message'] = "Database update failed.";
-        //         }
-        //     }
-        // } else {
-        //     $_SESSION['error_message'] = "Failed to upload the file.";
-        // }
+            if ($user_id) {
+                $stmt = $pdo->prepare("UPDATE users SET avatar = ? WHERE id = ?");
+                if ($stmt->execute([$newFileName, $user_id])) {
+                    $_SESSION['success_message'] = "Profile picture updated successfully!";
+                } else {
+                    $_SESSION['error_message'] = "Database update failed.";
+                }
+            }
+        } else {
+            $_SESSION['error_message'] = "Failed to upload the file.";
+        }
     }
 } else {
     $_SESSION['error_message'] = "No file uploaded.";

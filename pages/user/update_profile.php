@@ -224,20 +224,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <?php
                                             $avatar = isset($form_data['avatar']) && !empty($form_data['avatar']) ? $form_data['avatar'] : 'placeholder.png';
                                             ?>
-                                            
-                                            <img id="profile-pic" src="uploads/<?php echo htmlspecialchars($avatar); ?>" class="rounded-circle" width="120" height="120" alt="Profile Picture">
-                                           
+
+                                            <img id="profile-pic" src="./../../avatars/<?php echo htmlspecialchars($avatar); ?>" class="rounded-circle" width="270" height="270" alt="Profile Picture" data-bs-toggle="modal" data-bs-target="#viewAvatarModal">
+
                                             <br>
-                                           
+
                                             <label for="avatar" class="btn btn-sm btn-outline-primary mt-2">
-                                                <i class="fas fa-camera"></i> Change Avatar
+                                                <i class="fas fa-camera"></i> Select Avatar
                                             </label>
-                                           
+
                                             <input type="file" id="avatar" name="avatar" class="d-none" accept="image/*">
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary me-2">Update Profile</button>
+                                        <button type="submit" class="btn btn-primary me-2">Change Avatar</button>
                                     </form>
+
+                                    <div class="modal fade" id="viewAvatarModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">User Avatar</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <div style="height: 80vh;">
+                                                        <img id="profile-pic" src="./../../avatars/<?php echo htmlspecialchars($avatar); ?>"
+                                                            class="img-fluid mx-auto d-block "
+                                                            style="width: 100%; height: 100%; object-fit: contain;"
+                                                            alt="Profile Picture" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
