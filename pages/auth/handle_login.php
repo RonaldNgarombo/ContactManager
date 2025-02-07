@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Store user data in session
                 $_SESSION['user'] = $user;
+                $_SESSION['LAST_ACTIVITY'] = time();
 
                 // Redirect to dashboard
                 // header("Location: ./?page=home");

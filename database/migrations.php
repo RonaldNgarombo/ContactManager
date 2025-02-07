@@ -18,6 +18,16 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 
+    // Create the roles table
+    $sql = "CREATE TABLE IF NOT EXISTS roles (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            description VARCHAR(255) NULL,
+            permissions TEXT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )";
+    $pdo->exec($sql);
+
     // Create the users table
     $sql = "CREATE TABLE IF NOT EXISTS users (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -31,13 +41,15 @@ try {
     )";
     $pdo->exec($sql);
 
-    $sql = "CREATE TABLE activity_logs (
+    // Create the activity_logs table
+    $sql = "CREATE TABLE IF NOT EXISTS activity_logs (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
         action VARCHAR(255) NOT NULL,
         details TEXT NULL,
         status INT DEFAULT 1,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )";
     $pdo->exec($sql);
 

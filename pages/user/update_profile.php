@@ -1,13 +1,14 @@
 <?php
 // Start the session
-session_start();
+// session_start();
+require_once './../../utilities/auth_check.php';
+
+require_once './../../database/db.php';
+require_once './../../utilities/activity_logger.php';
 
 // Initialize error variables and form data
 $errors = [];
 $form_data = [];
-
-require_once './../../database/db.php';
-require_once './../../utilities/activity_logger.php';
 
 log_action($pdo, "View profile", "User viewed their profile page.");
 
