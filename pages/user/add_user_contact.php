@@ -14,6 +14,8 @@ $form_data = [];
 
 log_action($pdo, "View create/update contact", "User viewed the create/update contact page.");
 
+userCan('create-contacts', 'page');
+
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
 

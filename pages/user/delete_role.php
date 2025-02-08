@@ -4,36 +4,28 @@ require_once './../../utilities/auth_check.php';
 
 require_once './../../database/db.php';
 
+userCan('delete-roles', 'page');
+
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
 
-// Ensure the user is logged in
-if (!isset($user_id)) {
-    header("Location: login.php");
-    exit();
-}
-
-userCan('delete-contacts', 'action');
-
-
-// Check if contact_id is provided
-if (isset($_GET['contact_id']) && !empty($_GET['contact_id'])) {
-    $contact_id = $_GET['contact_id'];
+// Check if role_id is provided
+if (isset($_GET['role_id']) && !empty($_GET['role_id'])) {
+    $role_id = $_GET['role_id'];
 
     try {
         // Start transaction
         $pdo->beginTransaction();
 
         // Verify the contact belongs to the user
-        $sql = "DELETE FROM contacts WHERE id = :contact_id AND user_id = :user_id";
+        $sql = "DELETE FROM roles WHERE id = :role_id";
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':contact_id', $contact_id);
-        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':role_id', $role_id);
 
         if ($stmt->execute() && $stmt->rowCount() > 0) {
             // Commit transaction
             $pdo->commit();
-            $_SESSION['success_message'] = "Contact deleted successfully!";
+            $_SESSION['success_message'] = "Role deleted successfully!";
         } else {
             $_SESSION['error_message'] = "Failed to delete contact. It may not exist or belong to you.";
         }
@@ -46,6 +38,6 @@ if (isset($_GET['contact_id']) && !empty($_GET['contact_id'])) {
 }
 
 // Redirect back to the contact list page
-header("Location: ./user_contacts.php");
+header("Location: ./view_roles.php");
 
 exit();

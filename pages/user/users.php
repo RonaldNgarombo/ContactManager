@@ -6,28 +6,23 @@ require_once './../../utilities/auth_check.php';
 require_once './../../database/db.php';
 require_once './../../utilities/activity_logger.php';
 
-// Log view contacts
-log_action($pdo, "View contacts", "User viewed a list of contacts");
-
-userCan('view-contacts', 'page');
+// Log view users
+log_action($pdo, "View users", "User viewed a list of users");
 
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
 
 // Initialize search and filter conditions
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-$phone_type = isset($_GET['phone_type']) ? trim($_GET['phone_type']) : '';
 
-$sql = "SELECT * FROM contacts WHERE user_id = :user_id";
+$sql = "SELECT * FROM users";
+// $sql = "SELECT users.*, roles.name 
+//             FROM roles
+//             JOIN users ON users.role_id = roles.id";
 
 // Apply search filter if provided
 if (!empty($search)) {
-    $sql .= " AND (name LIKE :search OR phone LIKE :search OR email LIKE :search)";
-}
-
-// Apply phone type filter if provided
-if (!empty($phone_type)) {
-    $sql .= " AND phone_type = :phone_type";
+    $sql .= " AND (first_name LIKE :search OR last_name LIKE :search OR email LIKE :search)";
 }
 
 $sql .= " ORDER BY id DESC";
@@ -35,22 +30,16 @@ $sql .= " ORDER BY id DESC";
 $stmt = $pdo->prepare($sql);
 
 // Bind parameters
-$stmt->bindParam(':user_id', $user_id);
-
 if (!empty($search)) {
     $search_param = "%$search%";
     $stmt->bindParam(':search', $search_param);
-}
-
-if (!empty($phone_type)) {
-    $stmt->bindParam(':phone_type', $phone_type);
 }
 
 // Execute the query
 $stmt->execute();
 
 // Fetch all results
-$contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -61,7 +50,7 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Admin Dashboard | Contact Manager</title>
+    <title>Users | User Manager</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="./../../assets/vendors/feather/feather.css">
     <link rel="stylesheet" href="./../../assets/vendors/feather/feather.css">
@@ -103,19 +92,19 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <p class="card-title mb-0">My Contacts</p>
+                                    <p class="card-title mb-0">Users</p>
 
                                     <div>
                                         <div class="modal fade" id="importContactsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Import Contacts</h1>
+                                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Import Users</h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
 
                                                     <div class="modal-body">
-                                                        <p class="card-description">You can easily import your personal, family, or business contacts.</p>
+                                                        <p class="card-description">You can easily import your personal, family, or business users.</p>
 
                                                         <form class="forms-sample" method="POST" action="import_contacts.php" enctype="multipart/form-data">
                                                             <div class="row">
@@ -138,9 +127,9 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             </div>
                                         </div>
 
-                                        <button id="import-btn" type="button" class="btn btn-success me-2 text-white" data-bs-toggle="modal" data-bs-target="#importContactsModal">+ Import Contacts</button>
-                                        <button id="export-btn" type="button" class="btn btn-secondary me-2 text-white" style="background-color: #000000;">+ Export Contacts</button>
-                                        <a href="./add_user_contact.php" type="submit" class="btn btn-primary me-2">+ Add Contact</a>
+                                        <!-- <button id="import-btn" type="button" class="btn btn-success me-2 text-white" data-bs-toggle="modal" data-bs-target="#importContactsModal">+ Import Users</button> -->
+                                        <!-- <button id="export-btn" type="button" class="btn btn-secondary me-2 text-white" style="background-color: #000000;">+ Export Users</button> -->
+                                        <!-- <a href="./add_user_contact.php" type="submit" class="btn btn-primary me-2">+ Add User</a> -->
                                     </div>
                                 </div>
 
@@ -172,31 +161,32 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                 <hr>
 
-                                <?php if (!empty($contacts)): ?>
+                                <?php if (!empty($users)): ?>
                                     <div class="table-responsive">
                                         <table class="table table-striped table-borderless">
                                             <thead>
                                                 <tr>
-                                                    <th>Name</th>
-                                                    <th>Phone</th>
-                                                    <th>Type</th>
+                                                    <th>#ID</th>
+                                                    <th>First name</th>
+                                                    <th>Last name</th>
                                                     <th>Email</th>
-                                                    <th>Address</th>
+                                                    <th>Role</th>
                                                     <th>#Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
 
-                                                <?php foreach ($contacts as $contact): ?>
+                                                <?php foreach ($users as $usr): ?>
                                                     <tr>
-                                                        <td><?php echo htmlspecialchars($contact['name']); ?></td>
-                                                        <td><?php echo htmlspecialchars($contact['phone']); ?></td>
-                                                        <td><?php echo htmlspecialchars($contact['phone_type']); ?></td>
-                                                        <td><?php echo htmlspecialchars($contact['email']) ?: 'N/a'; ?></td>
-                                                        <td><?php echo htmlspecialchars($contact['address']) ?: 'N/a'; ?></td>
+                                                        <td><?php echo htmlspecialchars($usr['id']); ?></td>
+                                                        <td><?php echo htmlspecialchars($usr['first_name']); ?></td>
+                                                        <td><?php echo htmlspecialchars($usr['last_name']); ?></td>
+                                                        <td><?php echo htmlspecialchars($usr['email']) ?: 'N/a'; ?></td>
+                                                        <!-- <td><?php echo htmlspecialchars($usr['role']) ?: 'N/a'; ?></td> -->
+                                                        <td>.......</td>
                                                         <td>
-                                                            <a href="add_user_contact.php?contact_id=<?php echo $contact['id']; ?>" class="badge badge-success">Edit</a>
-                                                            <a href="delete_contact.php?contact_id=<?php echo $contact['id']; ?>" class="badge badge-danger" onclick="return confirm('Are you sure you want to delete this contact?')">Delete</a>
+                                                            <a href="update_user_role.php?user_id=<?php echo $usr['id']; ?>" class="badge badge-success">Update role</a>
+                                                            <!-- <a href="delete_contact.php?contact_id=<?php echo $usr['id']; ?>" class="badge badge-danger" onclick="return confirm('Are you sure you want to delete this usr?')">Delete</a> -->
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; ?>
@@ -205,7 +195,7 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         </table>
                                     </div>
                                 <?php else: ?>
-                                    <p class="text-center">No contacts found.</p>
+                                    <p class="text-center">No users found.</p>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -252,10 +242,10 @@ $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
 
             /**
-             * Export contacts to CSV
+             * Export users to CSV
              */
             document.getElementById("export-btn").addEventListener("click", function() {
-                // return alert("Exporting contacts is not implemented yet.");
+                // return alert("Exporting users is not implemented yet.");
                 let searchQuery = document.getElementById("searchInput").value;
                 let phoneType = document.getElementById("phoneType").value;
 

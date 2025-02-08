@@ -107,6 +107,9 @@ $series_json = json_encode($series);
 
             <div class="main-panel">
                 <div class="content-wrapper">
+
+                    <?php include './../../components/show_alert_messages.php'; ?>
+
                     <div class="row">
                         <div class="col-md-12 grid-margin">
                             <div class="row">
@@ -135,165 +138,125 @@ $series_json = json_encode($series);
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div id="contactCategoriesChart"></div>
+                        <?php if (userCan('view-contacts-by-category')): ?>
+                            <div class="col-md-6 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div id="contactCategoriesChart"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endif; ?>
+
+
+
 
                         <div class="col-md-6 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-6 stretch-card transparent">
-                                            <div class="card card-dark-blue">
-                                                <a href="./user_contacts.php">
-                                                    <div class="card-body text-white">
-                                                        <p class="mb-4">Total Contacts</p>
-                                                        <p class="fs-30 mb-2"><?php echo number_format($total_contacts) ?></p>
-                                                    </div>
-                                                </a>
+                                        <?php if (userCan('view-total-contacts')): ?>
+                                            <div class="col-md-6 stretch-card transparent">
+                                                <div class="card card-dark-blue">
+                                                    <a href="./user_contacts.php">
+                                                        <div class="card-body text-white">
+                                                            <p class="mb-4">Total Contacts</p>
+                                                            <p class="fs-30 mb-2"><?php echo number_format($total_contacts) ?></p>
+                                                        </div>
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php endif; ?>
 
-                                        <div class="col-md-6 stretch-card transparent">
-                                            <div class="card card-light-danger">
-                                                <a href="#">
-                                                    <div class="card-body text-white">
-                                                        <p class="mb-4">Number of users</p>
-                                                        <p class="fs-30 mb-2"><?php echo number_format($total_users) ?></p>
-                                                    </div>
-                                                </a>
+                                        <?php if (userCan('view-total-users')): ?>
+                                            <div class="col-md-6 stretch-card transparent">
+                                                <div class="card card-light-danger">
+                                                    <a href="#">
+                                                        <div class="card-body text-white">
+                                                            <p class="mb-4">Number of users</p>
+                                                            <p class="fs-30 mb-2"><?php echo number_format($total_users) ?></p>
+                                                        </div>
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <p class="card-title mb-0">Recent activity logs</p>
-                                    <p class="card-title mb-0"><a href="./view_activity_logs.php" style="color: #4f46e5;">View more</a></p>
-                                </div>
 
-                                <?php if (!empty($activity_logs)): ?>
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-borderless">
-                                            <thead>
-                                                <tr>
-                                                    <th>Timestamp</th>
-                                                    <th>User</th>
-                                                    <th>Action</th>
-                                                    <th>Type</th>
-                                                    <th>Description</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                    <?php if (userCan('view-activity-logs')): ?>
+                        <div class="grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <p class="card-title mb-0">Recent activity logs</p>
+                                        <p class="card-title mb-0"><a href="./view_activity_logs.php" style="color: #4f46e5;">View more</a></p>
+                                    </div>
 
-                                                <?php foreach ($activity_logs as $log): ?>
+                                    <?php if (!empty($activity_logs)): ?>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-borderless">
+                                                <thead>
                                                     <tr>
-                                                        <td><?php echo htmlspecialchars($log['timestamp']); ?></td>
-                                                        <!-- <td>John Doe</td> -->
-                                                        <td>
-                                                            <div>
-                                                                <?php echo htmlspecialchars($log['first_name']); ?>
-                                                                <?php echo htmlspecialchars($log['last_name']); ?>
+                                                        <th>Timestamp</th>
+                                                        <th>User</th>
+                                                        <th>Action</th>
+                                                        <th>Type</th>
+                                                        <th>Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
 
-                                                                <br>
+                                                    <?php foreach ($activity_logs as $log): ?>
+                                                        <tr>
+                                                            <td><?php echo htmlspecialchars($log['timestamp']); ?></td>
+                                                            <!-- <td>John Doe</td> -->
+                                                            <td>
+                                                                <div>
+                                                                    <?php echo htmlspecialchars($log['first_name']); ?>
+                                                                    <?php echo htmlspecialchars($log['last_name']); ?>
 
-                                                                <span class="text-secondary"><?php echo htmlspecialchars($log['email']); ?></span>
-                                                            </div>
-                                                        </td>
-                                                        <td><?php echo htmlspecialchars($log['action']); ?></td>
-                                                        <td>
-                                                            <?php
-                                                            if ($log['status'] == 1) {
-                                                                echo '<span class="text-success">Success</span>';
-                                                            } else if ($log['status'] == 2) {
-                                                                echo '<span class="text-danger">Failure</span>';
-                                                            } else {
-                                                                echo '<span class="text-muted">Unknown</span>';
-                                                            }
-                                                            ?>
-                                                        </td>
+                                                                    <br>
 
-                                                        <td><?php echo htmlspecialchars($log['details']); ?></td>
-                                                        <!-- <td>
+                                                                    <span class="text-secondary"><?php echo htmlspecialchars($log['email']); ?></span>
+                                                                </div>
+                                                            </td>
+                                                            <td><?php echo htmlspecialchars($log['action']); ?></td>
+                                                            <td>
+                                                                <?php
+                                                                if ($log['status'] == 1) {
+                                                                    echo '<span class="text-success">Success</span>';
+                                                                } else if ($log['status'] == 2) {
+                                                                    echo '<span class="text-danger">Failure</span>';
+                                                                } else {
+                                                                    echo '<span class="text-muted">Unknown</span>';
+                                                                }
+                                                                ?>
+                                                            </td>
+
+                                                            <td><?php echo htmlspecialchars($log['details']); ?></td>
+                                                            <!-- <td>
                                                             <a href="add_user_contact.php?contact_id=<?php echo $log['id']; ?>" class="badge badge-success">Edit</a>
                                                             <a href="delete_contact.php?contact_id=<?php echo $log['id']; ?>" class="badge badge-danger" onclick="return confirm('Are you sure you want to delete this log?')">Delete</a>
                                                         </td> -->
-                                                    </tr>
-                                                <?php endforeach; ?>
+                                                        </tr>
+                                                    <?php endforeach; ?>
 
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                <?php else: ?>
-                                    <!-- <p class="text-center">No activity logs found.</p> -->
-                                <?php endif; ?>
-
-
-                            </div>
-                        </div>
-                    </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    <?php else: ?>
+                                        <!-- <p class="text-center">No activity logs found.</p> -->
+                                    <?php endif; ?>
 
 
-                    <div class="col-md-5 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">To Do Lists</h4>
-                                <div class="list-wrapper pt-2">
-                                    <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
-                                        <li>
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox"> Meeting with Urban Team </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                        <li class="completed">
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox" checked> Duplicate a project for new customer </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                        <li>
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox"> Project meeting with CEO </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                        <li class="completed">
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox" checked> Follow up of team zilla </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                        <li>
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox"> Level up for Antony </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="add-items d-flex mb-0 mt-2">
-                                    <input type="text" class="form-control todo-list-input" placeholder="Add new task">
-                                    <button class="add btn btn-icon text-primary todo-list-add-btn bg-transparent"><i class="icon-circle-plus"></i></button>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
 
                 </div>
 

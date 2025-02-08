@@ -1,6 +1,5 @@
 <?php
-// Start the session
-// session_start();
+
 require_once './../../utilities/auth_check.php';
 
 require_once './../../database/db.php';
@@ -31,7 +30,7 @@ $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Roles | Role Manager</title>
+    <title>Roles | Contact Manager</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="./../../assets/vendors/feather/feather.css">
     <link rel="stylesheet" href="./../../assets/vendors/feather/feather.css">
@@ -76,7 +75,7 @@ $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <p class="card-title mb-0">System Roles</p>
 
                                     <div>
-                                        <a href="./add_user_contact.php" type="submit" class="btn btn-primary me-2">+ Add Role</a>
+                                        <a href="./create_update_role.php" type="submit" class="btn btn-primary me-2">+ Add Role</a>
                                     </div>
                                 </div>
 
@@ -95,16 +94,26 @@ $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     <th>#Action</th>
                                                 </tr>
                                             </thead>
+
                                             <tbody>
 
                                                 <?php foreach ($roles as $role): ?>
                                                     <tr>
                                                         <td><?php echo htmlspecialchars($role['name']); ?></td>
-                                                        <!-- <td><?php echo htmlspecialchars($role['description']) ?: 'N/a'; ?></td> -->
+                                                        <td>
+                                                            <?php
+                                                            if ($role['description']) {
+                                                                echo htmlspecialchars($role['description']);
+                                                            } else {
+                                                                echo 'N/a';
+                                                            }
+                                                            ?>
+                                                        </td>
 
-                                                        <td><?php echo var_dump($role['description']) ?></td>
-
-                                                        <td><a href="#">Permissions</a></td>
+                                                        <td>
+                                                            <a href="create_update_role.php?role_id=<?php echo $role['id']; ?>" class="badge badge-success">Edit</a>
+                                                            <a href="delete_role.php?role_id=<?php echo $role['id']; ?>" class="badge badge-danger" onclick="return confirm('Are you sure you want to delete this role?')">Delete</a>
+                                                        </td>
                                                     </tr>
                                                 <?php endforeach; ?>
 

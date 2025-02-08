@@ -28,7 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         try {
             // Prepare the SQL statement
-            $sql = "SELECT * FROM users WHERE email = :email";
+            $sql = "SELECT users.*, roles.name AS role_name, roles.permissions 
+                    FROM users 
+                    JOIN roles ON users.role_id = roles.id 
+                    WHERE users.email = :email";
+
+            // $sql = "SELECT * FROM users WHERE email = :email";
             $stmt = $pdo->prepare($sql);
 
             // Bind parameters
