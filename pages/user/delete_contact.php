@@ -1,20 +1,14 @@
 <?php
-// session_start();
+
 require_once './../../utilities/auth_check.php';
 
 require_once './../../database/db.php';
+require_once './../../utilities/activity_logger.php';
 
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
 
-// Ensure the user is logged in
-if (!isset($user_id)) {
-    header("Location: login.php");
-    exit();
-}
-
 userCan('delete-contacts', 'action');
-
 
 // Check if contact_id is provided
 if (isset($_GET['contact_id']) && !empty($_GET['contact_id'])) {
@@ -33,13 +27,21 @@ if (isset($_GET['contact_id']) && !empty($_GET['contact_id'])) {
         if ($stmt->execute() && $stmt->rowCount() > 0) {
             // Commit transaction
             $pdo->commit();
+
+            log_action("Delete contact", "Contact successfully deleted.");
+
             $_SESSION['success_message'] = "Contact deleted successfully!";
         } else {
             $_SESSION['error_message'] = "Failed to delete contact. It may not exist or belong to you.";
+
+            log_action("Delete contact", "Failed to delete contact.", 2);
         }
     } catch (Exception $e) {
         $pdo->rollBack(); // Rollback on failure
+
         $_SESSION['error_message'] = "An error occurred: " . $e->getMessage();
+
+        log_action("Delete contact", "Failed to delete contact. Message: " . $e->getMessage(), 2);
     }
 } else {
     $_SESSION['error_message'] = "Invalid request.";

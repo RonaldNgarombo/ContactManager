@@ -1,5 +1,5 @@
 <?php
-// session_start();
+
 require_once './../../utilities/auth_check.php';
 
 require_once './../../database/db.php';

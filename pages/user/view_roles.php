@@ -11,7 +11,7 @@ require_once './../../utilities/activity_logger.php';
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
 
-$sql = "SELECT * FROM roles";
+$sql = "SELECT * FROM roles ORDER BY id DESC";
 
 $stmt = $pdo->prepare($sql);
 

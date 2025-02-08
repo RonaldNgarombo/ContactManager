@@ -1,6 +1,5 @@
 <?php
-// Start the session
-// session_start();
+
 require_once './../../utilities/auth_check.php';
 
 require_once './../../database/db.php';
@@ -15,14 +14,15 @@ $user_id = $user['id'];
 // Initialize search and filter conditions
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-$sql = "SELECT * FROM users";
-// $sql = "SELECT users.*, roles.name 
-//             FROM roles
-//             JOIN users ON users.role_id = roles.id";
+$sql = "SELECT users.*, roles.name AS role_name 
+        FROM users 
+        LEFT JOIN roles ON users.role_id = roles.id";
 
 // Apply search filter if provided
 if (!empty($search)) {
-    $sql .= " AND (first_name LIKE :search OR last_name LIKE :search OR email LIKE :search)";
+    $sql .= " WHERE users.first_name LIKE :search 
+              OR users.last_name LIKE :search 
+              OR users.email LIKE :search";
 }
 
 $sql .= " ORDER BY id DESC";
@@ -32,7 +32,7 @@ $stmt = $pdo->prepare($sql);
 // Bind parameters
 if (!empty($search)) {
     $search_param = "%$search%";
-    $stmt->bindParam(':search', $search_param);
+    $stmt->bindParam(':search', $search_param, PDO::PARAM_STR);
 }
 
 // Execute the query
@@ -182,8 +182,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                         <td><?php echo htmlspecialchars($usr['first_name']); ?></td>
                                                         <td><?php echo htmlspecialchars($usr['last_name']); ?></td>
                                                         <td><?php echo htmlspecialchars($usr['email']) ?: 'N/a'; ?></td>
-                                                        <!-- <td><?php echo htmlspecialchars($usr['role']) ?: 'N/a'; ?></td> -->
-                                                        <td>.......</td>
+                                                        <td><?php echo htmlspecialchars($usr['role_name']) ?: 'N/a'; ?></td>
                                                         <td>
                                                             <a href="update_user_role.php?user_id=<?php echo $usr['id']; ?>" class="badge badge-success">Update role</a>
                                                             <!-- <a href="delete_contact.php?contact_id=<?php echo $usr['id']; ?>" class="badge badge-danger" onclick="return confirm('Are you sure you want to delete this usr?')">Delete</a> -->

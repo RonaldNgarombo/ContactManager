@@ -1,6 +1,4 @@
 <?php
-// Start the session
-// session_start();
 
 require_once './../../utilities/auth_check.php';
 
@@ -69,9 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($stmt->execute()) {
                     $_SESSION['success_message'] = "Contact updated successfully!";
 
-                    log_action("Update contact", "Contact updated successfully!");
+                    log_action("Update contact", "Contact information updated successfully!");
                 } else {
                     $errors[] = "An error occurred while updating the contact.";
+
                     log_action("Update contact", "An error occurred while updating the contact.", 2);
 
                     throw new Exception("Error updating contact.");
@@ -113,6 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Rollback the transaction in case of error
             $pdo->rollBack();
             $errors[] = $e->getMessage();
+
+            log_action("Create contact", $e->getMessage(), 2);
         }
     }
 }

@@ -1,8 +1,9 @@
 <?php
-// session_start();
+
 require_once './../../utilities/auth_check.php';
 
 require_once './../../database/db.php';
+require_once './../../utilities/activity_logger.php';
 
 userCan('delete-roles', 'page');
 
@@ -26,8 +27,12 @@ if (isset($_GET['role_id']) && !empty($_GET['role_id'])) {
             // Commit transaction
             $pdo->commit();
             $_SESSION['success_message'] = "Role deleted successfully!";
+
+            log_action("Delete role", "Role deleted successfully!");
         } else {
-            $_SESSION['error_message'] = "Failed to delete contact. It may not exist or belong to you.";
+            $_SESSION['error_message'] = "Failed to delete role.";
+
+            log_action("Delete role", "Failed to delete role.");
         }
     } catch (Exception $e) {
         $pdo->rollBack(); // Rollback on failure

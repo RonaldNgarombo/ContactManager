@@ -21,20 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Get form data and sanitize it
     $form_data['name'] = trim($_POST['name']);
     $form_data['description'] = trim($_POST['description']);
-    // $form_data['permissions'] = trim($_POST['permissions']);
 
     // Validate the inputs
     if (empty($form_data['name'])) {
         $errors['name'] = 'Name is required.';
     }
-
-    // if (empty($form_data['description'])) {
-    //     $errors['description'] = 'Description is required.';
-    // }
-
-    // if (empty($form_data['permissions'])) {
-    //     $errors['permissions'] = 'Permissions is required.';
-    // }
 
     // If no errors, insert or update the record in the database
     if (empty($errors)) {
@@ -58,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     log_action("Update role", "Role updated successfully!");
                 } else {
                     $errors[] = "An error occurred while updating the role.";
+
                     log_action("Update role", "An error occurred while updating the role.", 2);
 
                     throw new Exception("Error updating role.");
@@ -95,6 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Rollback the transaction in case of error
             $pdo->rollBack();
             $errors[] = $e->getMessage();
+
+            log_action("Create role", $e->getMessage(), 2);
         }
     }
 }
