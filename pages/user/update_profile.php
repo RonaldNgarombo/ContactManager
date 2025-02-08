@@ -10,7 +10,7 @@ require_once './../../utilities/activity_logger.php';
 $errors = [];
 $form_data = [];
 
-log_action($pdo, "View profile", "User viewed their profile page.");
+// log_action("View profile", "User viewed their profile page.");
 
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
@@ -67,14 +67,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($stmt->execute()) {
                 $_SESSION['success_message'] = "Profile information updated successfully!";
 
-                log_action($pdo, "Update profile", "Profile information updated successfully!");
+                log_action("Update profile", "Profile information updated successfully!");
 
                 header("Location: ./update_profile.php");
                 exit();
             } else {
                 $errors[] = "Failed to update profile information.";
 
-                log_action($pdo, "Update profile", "Failed to update profile information.", 2);
+                log_action("Update profile", "Failed to update profile information.", 2);
             }
         } catch (Exception $e) {
             $errors[] = "Database error: " . $e->getMessage();

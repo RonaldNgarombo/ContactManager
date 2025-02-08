@@ -71,6 +71,6 @@ foreach ($activity_logs as $log) {
     fputcsv($output, [$log['id'], $log['first_name'], $log['last_name'], $log['action'], $log['details'], $log['status']]);
 }
 
-log_action($pdo, "Export activity logs", "Exported activity logs successfully");
+log_action("Export activity logs", "Exported activity logs successfully");
 
 fclose($output);

@@ -60,16 +60,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
         if ($imported) {
             $_SESSION['success_message'] = "Contacts imported successfully!";
 
-            log_action($pdo, "Import contacts", "Imported contacts successfully");
+            log_action("Import contacts", "Imported contacts successfully");
         } else {
             $_SESSION['error_message'] = "No valid contacts found in the file!";
 
-            log_action($pdo, "Import contacts", "No valid contacts found in the file!", 2);
+            log_action("Import contacts", "No valid contacts found in the file!", 2);
         }
     } else {
         $_SESSION['error_message'] = "Failed to open file.";
 
-        log_action($pdo, "Import contacts", "Failed to open file.", 2);
+        log_action("Import contacts", "Failed to open file.", 2);
     }
 }
 

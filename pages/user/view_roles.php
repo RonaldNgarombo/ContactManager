@@ -6,7 +6,7 @@ require_once './../../database/db.php';
 require_once './../../utilities/activity_logger.php';
 
 // Log view roles
-log_action($pdo, "View roles", "User viewed a list of roles");
+// log_action("View roles", "User viewed a list of roles");
 
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];

@@ -11,8 +11,7 @@ require_once './../../utilities/activity_logger.php';
 $errors = [];
 $form_data = [];
 
-
-log_action($pdo, "View update user role", "User viewed the update user role page.");
+// log_action("View update user role", "User viewed the update user role page.");
 
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
@@ -51,10 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($stmt->execute()) {
                     $_SESSION['success_message'] = "User role updated successfully!";
 
-                    log_action($pdo, "Update user role", "User role updated successfully!");
+                    log_action("Update user role", "User role updated successfully!");
                 } else {
                     $errors[] = "An error occurred while updating the user role.";
-                    log_action($pdo, "Update user role", "An error occurred while updating the user role.", 2);
+                    log_action("Update user role", "An error occurred while updating the user role.", 2);
 
                     throw new Exception("Error updating user role.");
                 }

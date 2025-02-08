@@ -9,8 +9,7 @@ require_once './../../utilities/activity_logger.php';
 $errors = [];
 $form_data = [];
 
-
-log_action($pdo, "View create/update role", "User viewed the create/update role page.");
+// log_action("View create/update role", "User viewed the create/update role page.");
 
 userCan('create-roles', 'page');
 
@@ -56,10 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($stmt->execute()) {
                     $_SESSION['success_message'] = "Role updated successfully!";
 
-                    log_action($pdo, "Update role", "Role updated successfully!");
+                    log_action("Update role", "Role updated successfully!");
                 } else {
                     $errors[] = "An error occurred while updating the role.";
-                    log_action($pdo, "Update role", "An error occurred while updating the role.", 2);
+                    log_action("Update role", "An error occurred while updating the role.", 2);
 
                     throw new Exception("Error updating role.");
                 }
@@ -74,11 +73,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     $_SESSION['success_message'] = "Role created successfully!";
 
-                    log_action($pdo, "Create role", "New role created successfully!");
+                    log_action("Create role", "New role created successfully!");
                 } else {
                     $errors[] = "An error occurred while saving the role.";
 
-                    log_action($pdo, "Create role", "An error occurred while creating a new role.", 2);
+                    log_action("Create role", "An error occurred while creating a new role.", 2);
 
                     throw new Exception("Error creating role.");
                 }

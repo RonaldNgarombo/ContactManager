@@ -2,8 +2,10 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-function log_action($pdo, $action, $details = null, $status = 1)
+function log_action($action, $details = null, $status = 1)
 {
+    global $pdo; // Use the global PDO instance
+
     try {
         if (!isset($_SESSION['user']) || !isset($_SESSION['user']['id'])) {
             throw new Exception("User ID not found in session.");

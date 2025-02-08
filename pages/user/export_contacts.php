@@ -54,6 +54,6 @@ foreach ($contacts as $contact) {
     fputcsv($output, $contact);
 }
 
-log_action($pdo, "Export contacts", "Exported contacts successfully");
+log_action("Export contacts", "Exported contacts successfully");
 
 fclose($output);

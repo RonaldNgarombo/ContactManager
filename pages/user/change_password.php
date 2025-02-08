@@ -11,8 +11,7 @@ require_once './../../utilities/activity_logger.php';
 $errors = [];
 $form_data = [];
 
-
-log_action($pdo, "View change password", "User viewed the change password page.");
+// log_action("View change password", "User viewed the change password page.");
 
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];
@@ -63,14 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($stmt->execute()) {
                     $_SESSION['success_message'] = "Password changed successfully!";
 
-                    log_action($pdo, "Change password", "Password changed successfully!");
+                    log_action("Change password", "Password changed successfully!");
 
                     header("Location: ./change_password.php"); // Redirect to prevent form resubmission
                     exit();
                 } else {
                     $errors[] = "Failed to change password.";
 
-                    log_action($pdo, "Change password", "Failed to change password.", 2);
+                    log_action("Change password", "Failed to change password.", 2);
                 }
             }
         } catch (Exception $e) {

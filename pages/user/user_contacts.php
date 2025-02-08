@@ -7,7 +7,7 @@ require_once './../../database/db.php';
 require_once './../../utilities/activity_logger.php';
 
 // Log view contacts
-log_action($pdo, "View contacts", "User viewed a list of contacts");
+// log_action("View contacts", "User viewed a list of contacts");
 
 userCan('view-contacts', 'page');
 
