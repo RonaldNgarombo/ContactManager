@@ -18,6 +18,10 @@ $user_id = $user['id'];
 
 // Handle form submission for creating or updating the role
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die("CSRF validation failed!");
+    }
+
     // Get form data and sanitize it
     $form_data['name'] = trim($_POST['name']);
     $form_data['description'] = trim($_POST['description']);
@@ -278,6 +282,8 @@ if (isset($_GET['role_id']) && !empty($_GET['role_id']) && isset($_GET['permissi
                                 <p class="card-description">This role will include a set of permissions that determine what a user can do on the system.</p>
 
                                 <form class="forms-sample" method="POST" action="">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                                     <div class="row">
 
                                         <div class="form-group col-md-6">
@@ -314,6 +320,8 @@ if (isset($_GET['role_id']) && !empty($_GET['role_id']) && isset($_GET['permissi
                                 <p class="card-description">Click on a permission to set it. Users will only be able to access features whose permission has been added.</p>
 
                                 <form class="forms-sample" method="POST" action="">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                                     <div class="row">
                                         <div class="form-group">
                                             <label for="permissions">Permissions</label>

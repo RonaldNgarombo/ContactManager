@@ -16,6 +16,10 @@ $user_id = $user['id'];
 
 // Handle form submission for password change
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die("CSRF validation failed!");
+    }
+
     // Get form data
     $form_data['current_password'] = trim($_POST['current_password']);
     $form_data['new_password'] = trim($_POST['new_password']);
@@ -132,6 +136,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <p class="card-description">Securely chang your password.</p>
 
                                 <form class="forms-sample" method="POST" action="">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                                     <div class="row">
 
                                         <div class="form-group">

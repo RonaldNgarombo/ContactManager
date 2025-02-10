@@ -16,6 +16,10 @@ if (!is_dir($uploadDir)) {
 
 // Check if file was uploaded
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['avatar'])) {
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die("CSRF validation failed!");
+    }
+
     $file = $_FILES['avatar'];
 
     // die(var_dump($file));

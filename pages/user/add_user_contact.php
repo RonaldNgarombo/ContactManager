@@ -18,6 +18,10 @@ $user_id = $user['id'];
 
 // Handle form submission for creating or updating the contact
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die("CSRF validation failed!");
+    }
+
     // Get form data and sanitize it
     $form_data['name'] = trim($_POST['name']);
     $form_data['phone_number'] = trim($_POST['phone_number']);
@@ -191,6 +195,8 @@ if (isset($_GET['contact_id']) && !empty($_GET['contact_id'])) {
                                 <p class="card-description">Add personal, family, or business contacts.</p>
 
                                 <form class="forms-sample" method="POST" action="">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                                     <div class="row">
 
                                         <div class="form-group col-md-6">

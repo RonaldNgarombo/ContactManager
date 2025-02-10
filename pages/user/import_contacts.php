@@ -6,6 +6,10 @@ require_once './../../database/db.php';
 require_once './../../utilities/activity_logger.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die("CSRF validation failed!");
+    }
+
     $file = $_FILES['csv_file']['tmp_name'];
 
     if (!file_exists($file) || filesize($file) == 0) {

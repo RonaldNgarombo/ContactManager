@@ -107,6 +107,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                         <p class="card-description">You can easily import your personal, family, or business users.</p>
 
                                                         <form class="forms-sample" method="POST" action="import_contacts.php" enctype="multipart/form-data">
+                                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                                                             <div class="row">
 
                                                                 <div class="form-group">

@@ -27,6 +27,17 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
 // Update last activity timestamp
 $_SESSION['LAST_ACTIVITY'] = time();
 
+// Generate CSRF token if not already set
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Function to validate CSRF token
+function validate_csrf_token($token)
+{
+    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+}
+
 /**
  * Summary of userCan
  * @param mixed $permission

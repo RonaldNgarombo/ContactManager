@@ -16,6 +16,10 @@ $user_id = $user['id'];
 
 // Handle form submission for creating or updating the user role
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die("CSRF validation failed!");
+    }
+
     userCan('change-user-roles', 'page');
 
     // Get form data and sanitize it
@@ -160,6 +164,8 @@ $system_roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <p class="card-description">You can use this page to update the user's role. This will affect how they use the system.</p>
 
                                 <form class="forms-sample" method="POST" action="">
+                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                                     <div class="row">
 
                                         <div class="form-group col-md-6">

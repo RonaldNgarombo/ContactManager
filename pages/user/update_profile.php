@@ -34,6 +34,10 @@ if ($user_id) {
 
 // Handle form submission for password change
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die("CSRF validation failed!");
+    }
+
     // Get form data and sanitize it
     $form_data['first_name'] = trim($_POST['first_name']);
     $form_data['last_name'] = trim($_POST['last_name']);
@@ -142,6 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <p class="card-description">Change your profile details.</p>
 
                                     <form class="forms-sample" method="POST" action="">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                                         <div class="row">
 
                                             <div class="form-group">
@@ -179,6 +185,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <p class="card-description">Change your profile details.</p>
 
                                     <form class="forms-sample" method="POST" action="./handle_avatar_upload.php" enctype="multipart/form-data">
+                                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                                         <div class="text-center mb-4">
                                             <?php
                                             $avatar = isset($form_data['avatar']) && !empty($form_data['avatar']) ? $form_data['avatar'] : 'placeholder.png';
