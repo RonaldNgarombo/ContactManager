@@ -55,9 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['LAST_ACTIVITY'] = time();
 
                 // Redirect to dashboard
-                // header("Location: ./?page=home");
+                header("Location: ./../user/user_dashboard.php");
 
-                header("Location: ./../../router.php");
                 exit();
             } else {
                 $errors['login'] = "Invalid email or password.";

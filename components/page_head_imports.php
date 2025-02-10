@@ -13,3 +13,10 @@
 <link rel="stylesheet" href="./../../assets/css/style.css">
 
 <link rel="shortcut icon" href="./../../assets/images/favicon.png" />
+
+<style>
+    .validation-error {
+        color: red;
+        font-size: 0.8rem;
+    }
+</style>
