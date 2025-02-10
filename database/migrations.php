@@ -28,6 +28,12 @@ try {
         )";
     $pdo->exec($sql);
 
+    // Create default roles
+    $sql = "INSERT INTO roles (name, description) VALUES
+            ('Admin', 'Can perform any task'),
+            ('User', 'Can view and manage contacts')";
+    $pdo->exec($sql);
+
     // Create the users table
     $sql = "CREATE TABLE IF NOT EXISTS users (
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -41,6 +47,14 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE SET NULL
     )";
+    $pdo->exec($sql);
+
+
+    $hashed_password = password_hash('12345678', PASSWORD_BCRYPT);
+
+    // Create the super admin with email: nronald@nugsoft.com, password: 123456
+    $sql = "INSERT INTO users (role_id, first_name, last_name, email, user_type, password) VALUES
+            (1, 'Ronald', 'Ngz', 'nronald@nugsoft.com', 'admin', '$hashed_password')";
     $pdo->exec($sql);
 
     // Create the activity_logs table
@@ -60,7 +74,7 @@ try {
         id INT(11) AUTO_INCREMENT PRIMARY KEY,
         user_id INT(11) NOT NULL,
         name VARCHAR(100) NOT NULL,
-        phone VARCHAR(100) NOT NULL,
+        phone VARCHAR(100) NOT NULL UNIQUE,
         phone_type ENUM('Personal', 'Family', 'Business') DEFAULT 'Personal',
         email VARCHAR(100) NULL,
         address VARCHAR(255) NULL,
@@ -69,7 +83,7 @@ try {
     )";
     $pdo->exec($sql);
 
-    echo "\n\nMigrations run successfully. 🥳";
+    echo "\n\nMigrations run successfully. 🥳\n";
     return;
 } catch (PDOException $e) {
     die("Error: " . $e->getMessage());
