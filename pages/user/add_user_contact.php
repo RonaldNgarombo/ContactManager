@@ -81,10 +81,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     throw new Exception("Error updating contact.");
                 }
             } else {
-                // Create a new contact
+
+                // Check if the contact already exists for the user
+                $sql_check = "SELECT id FROM contacts WHERE user_id = :user_id AND phone = :phone_number";
+                $stmt_check = $pdo->prepare($sql_check);
+                $stmt_check->bindParam(':user_id', $user_id);
+                // $stmt_check->bindParam(':name', $form_data['name']);
+                $stmt_check->bindParam(':phone_number', $form_data['phone_number']);
+                $stmt_check->execute();
+
+                if ($stmt_check->fetch()) {
+                    $errors[] = "A contact with this phone number already exists.";
+                    log_action("Create contact", "Duplicate contact detected.", 2);
+                    // throw new Exception("Duplicate contact detected.");
+
+                    // Set the session message and redirect back to the contacts page
+                    $_SESSION['error_message'] = "A contact with this phone number already exists.";
+                    header("Location: ./user_contacts.php");
+                    exit();
+                }
+
+                // Proceed with inserting the new contact
                 $sql = "INSERT INTO contacts (user_id, name, phone, phone_type, email, address) VALUES (:user_id, :name, :phone_number, :phone_type, :email, :address)";
                 $stmt = $pdo->prepare($sql);
-                $stmt->bindParam(':user_id', $user_id); // Assume you have $user_id based on your session or authentication system
+                $stmt->bindParam(':user_id', $user_id);
                 $stmt->bindParam(':name', $form_data['name']);
                 $stmt->bindParam(':phone_number', $form_data['phone_number']);
                 $stmt->bindParam(':phone_type', $form_data['phone_type']);
@@ -92,15 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt->bindParam(':address', $form_data['address']);
 
                 if ($stmt->execute()) {
-
                     $_SESSION['success_message'] = "Contact created successfully!";
-
                     log_action("Create contact", "New contact created successfully!");
                 } else {
                     $errors[] = "An error occurred while saving the contact.";
-
                     log_action("Create contact", "An error occurred while creating a new contact.", 2);
-
                     throw new Exception("Error creating contact.");
                 }
             }

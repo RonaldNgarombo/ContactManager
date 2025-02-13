@@ -10,7 +10,6 @@ require_once './../../utilities/system_feature_check.php';
 $errors = [];
 $form_data = [];
 
-// log_action("View create/update role", "User viewed the create/update role page.");
 
 // userCan('create-roles', 'page');
 
@@ -33,99 +32,6 @@ $activeFeatures = [];
 
 $roleId = null;
 
-// If updating, fetch the existing data for repopulating the form
-if (isset($_GET['role_id']) && !empty($_GET['role_id']) && !isset($_GET['permission'])) {
-    $role_id = $_GET['role_id'];
-    $roleId = $role_id;
-    $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
-    $stmt->bindParam(':role_id', $role_id);
-    $stmt->execute();
-    $existing_role = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($existing_role) {
-        $form_data = $existing_role;
-
-        if ($existing_role['permissions']) {
-            $activeFeatures = json_decode($existing_role['permissions']);
-        }
-    } else {
-        // Redirect or show an error if role doesn't exist
-        $errors[] = "Role not found.";
-    }
-}
-
-
-// Add or remove the permission
-if (isset($_GET['role_id']) && !empty($_GET['role_id']) && isset($_GET['feature']) && !empty($_GET['feature'])) {
-    $role_id = $_GET['role_id'];
-    $feature = $_GET['feature'];
-
-    // Fetch the role from the database
-    $stmt = $pdo->prepare("SELECT * FROM system_features");
-    $stmt->execute();
-    $existing_role = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Decode existing permissions from JSON
-    $activeFeatures = json_decode($existing_role['permissions'], true);
-
-    if (!is_array($activeFeatures)) {
-        $activeFeatures = []; // Ensure it's an array
-    }
-
-    // Add the permission if it's not in the array, otherwise remove it
-    if (in_array($permission, $activeFeatures)) {
-        // Remove permission
-        $activeFeatures = array_diff($activeFeatures, [$permission]);
-    } else {
-        // Add permission
-        $activeFeatures[] = $permission;
-    }
-
-    // Encode back to JSON for storage
-    $updatedPermissions = json_encode(array_values($activeFeatures));
-
-    // Update the database
-    $updateStmt = $pdo->prepare("UPDATE roles SET permissions = :permissions WHERE id = :role_id");
-    $updateStmt->bindParam(':permissions', $updatedPermissions);
-    $updateStmt->bindParam(':role_id', $role_id);
-
-    if ($updateStmt->execute()) {
-        $_SESSION['success_message'] = "Changes saved successfully!";
-
-        header("Location: ./create_update_role.php?role_id={$role_id}");
-
-        // echo json_encode(["status" => "success", "message" => "Permission updated.", "permissions" => $activeFeatures]);
-    } else {
-        $_SESSION['error_message'] = "Failed to update permission.!";
-
-        // echo json_encode(["status" => "error", "message" => "Failed to update permission."]);
-    }
-}
-
-
-// if (isset($_GET['role_id']) && !empty($_GET['role_id']) && isset($_GET['permission']) && !empty($_GET['permission'])) {
-//     $role_id = $_GET['role_id'];
-//     $roleId = $role_id;
-//     $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
-//     $stmt->bindParam(':role_id', $role_id);
-//     $stmt->execute();
-//     $existing_role = $stmt->fetch(PDO::FETCH_ASSOC);
-
-//     // STEPS TO ADD/REMOVE the permission
-//     // Get the role
-//     // Add it if it doesn't exist
-//     // And if it does, remove it
-//     // Then save in the db
-
-//     // if ($existing_role) {
-//     //     $form_data = $existing_role;
-
-//     //     $activeFeatures = json_decode($existing_role['permissions']);
-//     // } else {
-//     //     // Redirect or show an error if role doesn't exist
-//     //     $errors[] = "Role not found.";
-//     // }
-// }
 
 /**
  * Check if a system feature with the given id(feature_id) is active
@@ -146,6 +52,9 @@ if (isset($_GET['feature_id']) && !empty($_GET['feature_id'])) {
     if ($feature) {
         // Disable the feature if it's active, and vice versa
         $is_active = $feature['is_active'] ? 0 : 1;
+
+        $msg = " system feature: " . $feature['name'];
+        log_action("Enable/Disable system feature", $feature['is_active'] ? "Disabled" . $msg : "Enabled" . $msg);
 
         // Update the feature in the database
         $updateStmt = $pdo->prepare("UPDATE system_features SET is_active = :is_active WHERE id = :feature_id");
