@@ -4,6 +4,7 @@ require_once './../../utilities/auth_check.php';
 
 require_once './../../database/db.php';
 require_once './../../utilities/activity_logger.php';
+require_once './../../utilities/system_feature_check.php';
 
 // Initialize error variables and form data
 $errors = [];

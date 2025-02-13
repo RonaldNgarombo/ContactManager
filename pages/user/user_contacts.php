@@ -4,11 +4,14 @@ require_once './../../utilities/auth_check.php';
 
 require_once './../../database/db.php';
 require_once './../../utilities/activity_logger.php';
+require_once './../../utilities/system_feature_check.php';
 
 // Log view contacts
 // log_action("View contacts", "User viewed a list of contacts");
 
 userCan('view-contacts', 'page');
+
+checkIfSystemFeatureIsActive('Contact Management');
 
 $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 $user_id = $user['id'];

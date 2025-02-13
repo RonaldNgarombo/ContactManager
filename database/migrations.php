@@ -18,6 +18,23 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 
+    // Create the system features table
+    $sql = "CREATE TABLE IF NOT EXISTS system_features (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        description VARCHAR(255) NULL,
+        is_active BOOLEAN DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+    $pdo->exec($sql);
+
+    // Create default system features
+    $sql = "INSERT INTO system_features (name, description) VALUES
+            ('User Management', 'Manage users and roles'),
+            ('Contact Management', 'Manage contacts'),
+            ('Profile Management', 'Manage profile')";
+    $pdo->exec($sql);
+
     // Create the roles table
     $sql = "CREATE TABLE IF NOT EXISTS roles (
             id INT AUTO_INCREMENT PRIMARY KEY,
